@@ -1,21 +1,14 @@
 package src;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
 import com.sun.media.sound.InvalidFormatException;
 
-import opennlp.tools.sentdetect.SentenceDetector;
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
 import opennlp.tools.tokenize.Tokenizer;
@@ -296,7 +289,7 @@ class Book {
 	 * Output : No of characters/count of paragraphs
 	 * 
 	 */
-	private int getAverageParaLengthChars()	{
+	protected int getAverageParaLengthChars()	{
 		
 		int count=0;
 		for(Paragraph para : paras) {
