@@ -33,7 +33,7 @@ class Book {
 	protected String filename;
 	protected String authorName;
 	private String book;
-	private String[] sentences;
+	protected String[] sentences;
 	private int sentenceCount;
 	private int wordCount;
 	private int punctuationCount;
@@ -44,7 +44,7 @@ class Book {
 	SentenceModel model ;
 	static Map<String,Integer> wordFrequency;	
 		
-	private List<Paragraph> paras;
+	List<Paragraph> paras;
 	
 	/*	Constructors
 	 * 	default constructor for initialization
