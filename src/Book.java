@@ -27,6 +27,7 @@ class Book {
 	private int sentenceCount;
 	private int wordCount;
 	private int punctuationCount;
+	private double punctuationDensity;
 	Map<String,Integer> wordFrequency;
 
 	/*	Constructors
@@ -48,7 +49,8 @@ class Book {
 		wordFrequency=getWordFrequency(sentences); 
 		wordCount = calculateWordCount(wordFrequency);
 		punctuationCount=getPunctuationCount(book);
-		
+		punctuationDensity=getPunctionDensity();
+		System.out.println(punctuationDensity);
 	}
 
 	/*
@@ -81,6 +83,16 @@ class Book {
 		return this.wordCount;
 	}
 
+	/*
+	 * Function: getWordCount
+	 * Input : None
+	 * Output : Word Count of this book
+	 * 
+	 */
+	private double getPunctionDensity() {
+		return (double)this.punctuationCount/this.wordCount;
+	}
+	
 	/*
 	 * Function: readFile
 	 * Input : Path of the file (String)
