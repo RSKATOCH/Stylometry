@@ -2,5 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/rkatoch/AppData/Local/Microsoft/Windows/Temporary Internet Files/Content.IE5/ZEDYNAXC/opennlp-tools-1.5.0[1].jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
