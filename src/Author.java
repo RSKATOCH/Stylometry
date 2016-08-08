@@ -1,3 +1,4 @@
+package src;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -6,9 +7,9 @@ class Author {
 	protected String name;
 	protected List<Book> books;
 	protected List<String> commonTopWords;
-	private int averageSentenceLength;
-	private int averagePunctuationDensity;
-	private int averageParagraphLength;
+	protected double averageSentenceLength;
+	protected double averagePunctuationDensity;
+	protected double averageParagraphLength;
 	/*	Constructors
 	 *	parameterized constructor for file reading and initialization
 	 */
@@ -63,4 +64,5 @@ class Author {
 		
 		return Math.sqrt(Math.pow(diffParagraphLength, 2)+Math.pow(diffSentenceLength, 2)+Math.pow(diffPunctuationDensity, 2));
 	}
+	
 }
