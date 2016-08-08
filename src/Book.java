@@ -1,3 +1,4 @@
+package src;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -14,6 +15,7 @@ import java.util.TreeMap;
 
 import com.sun.media.sound.InvalidFormatException;
 
+import opennlp.tools.sentdetect.SentenceDetector;
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
 import opennlp.tools.tokenize.Tokenizer;
@@ -22,36 +24,74 @@ import opennlp.tools.tokenize.TokenizerModel;
 
 class Book {
 
+	protected String filename;
+	protected String authorName;
 	private String book;
 	private String[] sentences;
 	private int sentenceCount;
 	private int wordCount;
 	private int punctuationCount;
 	private double punctuationDensity;
+	
+	private final static String TRAINING_FILE = "utils/en-sent.bin";
+	
+	
+	SentenceModel model ;
 	Map<String,Integer> wordFrequency;
 	
-
+	/*
+	 * 	class : Paragraph
+	 * 	Usage : Paragraph can have multiple property so to incorporate that
+	 * 
+	 */
+	private class Paragraph {
+		int wordCount;
+		int sentenceCount;
+		int letterCount;
+		String para;
+	} 
+	
+	private List<Paragraph> paras;
+	
 	/*	Constructors
 	 * 	default constructor for initialization
 	 *	parameterized constructor for file reading and initialization
 	 */
-	public Book() {
+	public Book() throws opennlp.tools.util.InvalidFormatException, IOException {
+		filename = null;
+		authorName = null;
 		book = null;
 		sentences = null;
 		sentenceCount = 0;
 		wordCount = 0;
 		wordFrequency=null;
+		paras = null;
+		InputStream is = new FileInputStream(TRAINING_FILE);
+		model = new SentenceModel(is);
+		is.close();
 	}
 	
-	public Book(String filename) throws IOException {
+	public Book(String filename, String authorName) throws IOException {
+		
+		this.filename = filename;
+		this.authorName = authorName;
 		book = readFile(filename);
+		
+		InputStream is = new FileInputStream(TRAINING_FILE);
+		model = new SentenceModel(is);
+		is.close();
+		
 		sentences = SentenceDetect(book);
+		paras = getParas(book);
+		
 		sentenceCount=sentences.length;
 		wordFrequency=getWordFrequency(sentences); 
 		wordCount = calculateWordCount(wordFrequency);
+		
 		punctuationCount=getPunctuationCount(book);
-		punctuationDensity=getPunctionDensity();
-		System.out.println(punctuationDensity);
+		punctuationDensity=getPunctuationDensity();
+		
+		//System.out.println(punctuationDensity);
 	}
 
 	/*
@@ -60,7 +100,17 @@ class Book {
 	 * Output : List of Strings containing all lines of the file.
 	 * 
 	 */
-	private String[] getSentenceList() {
+	protected String getBook() {
+		return this.book;
+	}
+	
+	/*
+	 * Function: getSentenceList
+	 * Input : None
+	 * Output : List of Strings containing all lines of the file.
+	 * 
+	 */
+	protected String[] getSentenceList() {
 		return this.sentences;
 	}
 
@@ -70,7 +120,7 @@ class Book {
 	 * Output : Sentence Count of this book
 	 * 
 	 */
-	private int getSentenceCount() {
+	protected int getSentenceCount() {
 		return this.sentenceCount;
 	}
 
@@ -80,7 +130,7 @@ class Book {
 	 * Output : Word Count of this book
 	 * 
 	 */
-	private int getWordCount() {
+	protected int getWordCount() {
 		return this.wordCount;
 	}
 
@@ -90,8 +140,18 @@ class Book {
 	 * Output : Word Count of this book
 	 * 
 	 */
-	private double getPunctionDensity() {
+	protected double getPunctuationDensity() {
 		return (double)this.punctuationCount/this.wordCount;
+	}
+	
+	/*
+	 * Function: getParaList
+	 * Input : None
+	 * Output : List of paragraphs in this book
+	 * 
+	 */
+	protected List<Paragraph> getParaList() {
+		return this.paras;
 	}
 	
 	/*
@@ -139,26 +199,38 @@ class Book {
 		for(String s:sentences){
 		  tokens = tokenizer.tokenize(s);
 			 for (String token : tokens) {
-				    if (freqs.containsKey(token)) {
-				      freqs.put(token, freqs.get(token) + 1);
-				    } else {
-				      freqs.put(token, 1);
-				    }
+				 /*Remove punctuation */
+				 if(!token.toString().matches(",|\\.|\"|!|\'|\\?|\'s|;|:|\'d||\\]|\\[|\\(|\\)|\\}|\\{")) {
+				 		if (freqs.containsKey(token)) {
+				 			freqs.put(token, freqs.get(token) + 1);
+				 		} else {
+				 			freqs.put(token, 1);
+				 		}
+				 }
 			 }	
 		}
 		return freqs;
 	}
 
 	/*
-	 * Function: getAverageSentenceLength
-	 * Input : Path of the file (String)
+	 * Function: getAverageSentenceLengthChars
+	 * Input : Variable containing the entire file
+	 * Output : Average number of characters in each sentence
+	 * 
+	 */
+	protected int getAverageSentenceLengthChars() {
+		return this.book.length()/this.sentenceCount;
+	}
+	
+	/*
+	 * Function: getAverageSentenceLengthWord
+	 * Input : Variable containing the entire file
 	 * Output : List of Strings containing all lines of the file.
 	 * 
 	 */
-	private int getAverageSentenceLength(String book) {
+	private int getAverageSentenceLengthWord(String book) {
 		return wordCount/sentenceCount;
 	}
-	
 	
 	/*
 	 * Function: calculateWordCount
@@ -183,21 +255,93 @@ class Book {
 	private String[] SentenceDetect(String data) throws InvalidFormatException,IOException {
 		
 		// always start with a model, a model is learned from training data
-		InputStream is = new FileInputStream("utils/en-sent.bin");
-		SentenceModel model = new SentenceModel(is);
+		
 		SentenceDetectorME sdetector = new SentenceDetectorME(model);
 
 		String sentences[] = sdetector.sentDetect(data);
 
 		//System.out.println(sentences.length);
 		
-		is.close();
+		
 		return sentences;
 	}
+
+	
+	/*
+	 * Function: getParas
+	 * Input : The book variable containing all the lines
+	 * Output : List of strings that are the paragraphs of the book
+	 * 
+	 */
+	private List<Paragraph> getParas(String data) throws InvalidFormatException, IOException {
+		
+		List<Paragraph> paraList = new ArrayList<>();
+		for(String para: this.getBook().split(("\\r?\\n(\\r?\\n)+"))) {
+			Paragraph p = new Paragraph();
+			p.para = para;
+			p.letterCount=p.para.length();
+			for(String word : para.split(" ")) {
+				p.wordCount++;
+			}
+			p.sentenceCount=SentenceDetect(para).length;
+			paraList.add(p);
+		}
+		
+		return paraList;
+	}
+	
+	/*
+	 * Function: getAverageParaLengthChars
+	 * Input : None
+	 * Output : No of characters/count of paragraphs
+	 * 
+	 */
+	private int getAverageParaLengthChars()	{
+		
+		int count=0;
+		for(Paragraph para : paras) {
+			count+=para.para.length();
+		}
+		
+		return count/paras.size();
+	}
+	
+	/*
+	 * Function: getAverageParaLengthWords
+	 * Input : None
+	 * Output : No of words/count of paragraphs
+	 * 
+	 */
+	private int getAverageParaLengthWord()	{
+		
+		int count=0;
+		for(Paragraph para : paras) {
+			count+=para.wordCount;
+		}
+		
+		return count/paras.size();
+	}
+	
+	/*
+	 * Function: getAverageParaLengthWords
+	 * Input : None
+	 * Output : No of sentences/count of paragraphs
+	 * 
+	 */
+	private int getAverageParaLengthSentences()	{
+		
+		int count=0;
+		for(Paragraph para : paras) {
+			count+=para.sentenceCount;
+		}
+		
+		return count/paras.size();
+	}
+
 	/*
 	 * Function: getPunctionCount
 	 * Input : Path of the file (String)
-	 * Output :Number of punctuations used
+	 * Output :Number of punctuation used
 	 * 
 	 */
    	 
@@ -210,7 +354,36 @@ class Book {
 	            }
 		 }
 		return punc;
-		
-	
 	}
+	
+	/*
+	 * Function: debug
+	 * Input : None
+	 * Output : Debug log stating Filename, word Count, Sentence Count, Paragraph Count etc
+	 * 
+	 */
+	public void debug() {
+		final String Boundary = "-----------------------------";
+		System.out.println(Boundary);
+		System.out.println("Filename = "+filename);
+		System.out.println("Filename = "+authorName);
+		
+		System.out.println("Word Count Total = "+getWordCount());
+		System.out.println("Sentence Count Total = "+getSentenceCount());
+		System.out.println("Paragraph Count = "+paras.size());
+		
+		System.out.println("Average Sentence Length (Characters) = "+getAverageSentenceLengthChars());
+		System.out.println("Average Sentence Length (Words) = "+getAverageSentenceLengthWord(book));
+		System.out.println("Punctuation Density = "+punctuationDensity);
+		System.out.println("Average Paragraph Length (Characters) = "+getAverageParaLengthChars());
+		System.out.println("Average Paragraph Length (Words) = "+getAverageParaLengthWord());
+		System.out.println("Average Paragraph Length (Sentences) = "+getAverageParaLengthSentences());
+		
+		System.out.println("Top 20 words");
+		for(String word : getTopNWords(20)) {
+			System.out.print(word+" ");
+		}
+		System.out.println();
+	}
+
 }

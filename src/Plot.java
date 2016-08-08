@@ -1,3 +1,4 @@
+package src;
 import java.util.ArrayList;
 
 import javafx.application.Application;
@@ -27,30 +28,25 @@ public class Plot extends Application  {
 	
  @Override public void start(Stage stage) throws Exception {
        
-	   drawChart(stage,"Punctuation Density");
- }
-	 
- 
-private void drawChart(Stage stage,String metric)
-{
 	stage.setTitle("Metrics Summary");
     final CategoryAxis xAxis = new CategoryAxis();
     final NumberAxis yAxis = new NumberAxis();
     final BarChart<String,Number> bc = new BarChart<String,Number>(xAxis,yAxis);
-    bc.setTitle(metric);
+    bc.setTitle("Metric Summary");
     if(this.sameAuthor)
     xAxis.setLabel("Novels");
     else
-    xAxis.setLabel(this.Books.get(0).author);
+    xAxis.setLabel(this.Books.get(0).authorName+"");
     yAxis.setLabel("Value");
  
-    Scene scene= new Scene(bc,800,600);;
+    Scene scene= new Scene(bc,800,600);
      for(Book b:this.Books){
-       XYChart.Series series1 = new XYChart.Series();
-    	series1.setName("2003");       
-        series1.getData().add(new XYChart.Data("austria", 25601.34));
-        series1.getData().add(new XYChart.Data("brazil", 20148.82));
-        bc.getData().add(series1);
+     
+    	 XYChart.Series series1 = new XYChart.Series();
+         series1.setName(b.filename);       
+         series1.getData().add(new XYChart.Data("Punctuation Density", b.getPunctuationDensity()));
+         series1.getData().add(new XYChart.Data("Average Sentence Length", b.getAverageSentenceLengthChars()));
+         bc.getData().add(series1);
      }
         
 //        XYChart.Series series2 = new XYChart.Series();
