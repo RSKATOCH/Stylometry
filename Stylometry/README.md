@@ -10,3 +10,8 @@ Update (5:30PM):
 - Functionalities:
 	- Metrics : Average Sentence Length, Punctuation Density, Common words
 	- Plot functionality
+
+Update (1:15AM):
+- Added Random Paragraph Generator
+- Tested random paragraph generator
+- nextWord now outputs word based on probability distribution
