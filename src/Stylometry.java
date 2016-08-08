@@ -10,7 +10,7 @@ class Stylometry {
 	
 	private final static int BookCount = 3;
 	
-	public static void main(String args[]) {
-		
+	public static void main(String args[]) throws IOException {
+		Book b=new Book("C:/Users/abiak/workspace/War.txt");
 	}
 }
