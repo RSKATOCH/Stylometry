@@ -21,6 +21,18 @@ import opennlp.tools.tokenize.Tokenizer;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 
+/*
+ * 	class : Paragraph
+ * 	Usage : Paragraph can have multiple property so to incorporate that
+ * 
+ */
+class Paragraph {
+	int wordCount;
+	int sentenceCount;
+	int letterCount;
+	String para;
+} 
+
 class Book {
 
 	protected String filename;
@@ -34,22 +46,9 @@ class Book {
 	
 	private final static String TRAINING_FILE = "utils/en-sent.bin";
 	
-	
 	SentenceModel model ;
-	Map<String,Integer> wordFrequency;
-	
-	/*
-	 * 	class : Paragraph
-	 * 	Usage : Paragraph can have multiple property so to incorporate that
-	 * 
-	 */
-	private class Paragraph {
-		int wordCount;
-		int sentenceCount;
-		int letterCount;
-		String para;
-	} 
-	
+	Map<String,Integer> wordFrequency;	
+		
 	private List<Paragraph> paras;
 	
 	/*	Constructors
@@ -344,7 +343,7 @@ class Book {
 	 * 
 	 */
    	 
-	private Integer getPunctuationCount(String data){
+	protected Integer getPunctuationCount(String data){
 		int punc=0;
 		 for (int a = 0; a < data.length(); a++) {
 	            char c = data.charAt(a);
