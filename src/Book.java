@@ -24,6 +24,7 @@ class Book {
 	private String[] sentences;
 	private int sentenceCount;
 	private int wordCount;
+	private int punctuationCount;
 	Map<String,Integer> wordFrequency=new HashMap<String,Integer>();
 
 	/*	Constructors
@@ -38,7 +39,8 @@ class Book {
 		book = readFile(filename);
 		sentences = SentenceDetect(book);
 		sentenceCount=sentences.length;
-		wordFrequency=getWordFrequency(sentences); 	
+		wordFrequency=getWordFrequency(sentences); 
+		punctuationCount=getPunctuationCount(book);
 	}
 
 	/*
@@ -150,6 +152,23 @@ class Book {
 		is.close();
 		return sentences;
 	}
-
-	 
+	/*
+	 * Function: getPunctionCount
+	 * Input : Path of the file (String)
+	 * Output :Number of punctuations used
+	 * 
+	 */
+   	 
+	private Integer getPunctuationCount(String data){
+		int punc=0;
+		 for (int a = 0; a < data.length(); a++) {
+	            char c = data.charAt(a);
+	            if (!Character.isLetterOrDigit(c) && !Character.isWhitespace(c)) {
+	                punc++;
+	            }
+		 }
+		return punc;
+		
+	
+	}
 }
