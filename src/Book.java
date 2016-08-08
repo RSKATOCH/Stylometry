@@ -14,6 +14,7 @@ import java.util.TreeMap;
 
 import com.sun.media.sound.InvalidFormatException;
 
+import opennlp.tools.sentdetect.SentenceDetector;
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.sentdetect.SentenceModel;
 import opennlp.tools.tokenize.Tokenizer;
@@ -27,7 +28,21 @@ class Book {
 	private int sentenceCount;
 	private int wordCount;
 	Map<String,Integer> wordFrequency;
-
+	
+	/*
+	 * 	class : Paragraph
+	 * 	Usage : Paragraph can have multiple property so to incorporate that
+	 * 
+	 */
+	private class Paragraph {
+		int wordCount;
+		int sentenceCount;
+		int letterCount;
+		String para;
+	} 
+	
+	private List<Paragraph> paras;
+	
 	/*	Constructors
 	 * 	default constructor for initialization
 	 *	parameterized constructor for file reading and initialization
@@ -38,6 +53,7 @@ class Book {
 		sentenceCount = 0;
 		wordCount = 0;
 		wordFrequency=null;
+		paras = null;
 	}
 	
 	public Book(String filename) throws IOException {
@@ -46,8 +62,19 @@ class Book {
 		sentenceCount=sentences.length;
 		wordFrequency=getWordFrequency(sentences);
 		wordCount = calculateWordCount(wordFrequency);
+		paras = getParas(book);
 	}
 
+	/*
+	 * Function: getSentenceList
+	 * Input : None
+	 * Output : List of Strings containing all lines of the file.
+	 * 
+	 */
+	protected String getBook() {
+		return this.book;
+	}
+	
 	/*
 	 * Function: getSentenceList
 	 * Input : None
@@ -178,6 +205,31 @@ class Book {
 		is.close();
 		return sentences;
 	}
+	
+	/*
+	 * Function: getParas
+	 * Input : The book variable containing all the lines
+	 * Output : List of strings that are the paragraphs of the book
+	 * 
+	 */
+	private List<Paragraph> getParas(String data) throws InvalidFormatException, IOException {
+		
+		List<Paragraph> paraList = new ArrayList<>();
+		for(String para: this.getBook().split(("\\r?\\n(\\r?\\n)+"))) {
+			Paragraph p = new Paragraph();
+			p.para = para;
+			p.letterCount=p.para.length();
+			for(String word : para.split(" ")) {
+				p.wordCount++;
+			}
+			p.sentenceCount=SentenceDetect(para).length;
+			paraList.add(p);
+		}
+		
+		return paraList;
+	}
+	
+	
 
 	 
 }
