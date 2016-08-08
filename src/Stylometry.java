@@ -14,10 +14,13 @@ class Stylometry {
 	
 	public static void main(String args[]) throws IOException {
 
-		final String filename = "C:/GitRepo/Stylometry/utils/WarAndPeace.txt";
-		Book b=new Book(filename);
-
-		Book c=new Book("C:/Users/abiak/Downloads/War.txt");
-
+		final String filenames[] = {"utils/WarAndPeace.txt","utils/AnnaKarenina.txt","utils/Resurrection.txt","utils/Hamlet.txt","utils/Julius Caesar.txt","utils/Macbeth.txt","utils/Othello.txt","utils/Romeo Juliet.txt"};
+		final String authorname[] = {"Tolstoy","Tolstoy","Tolstoy","Shakespeare","Shakespeare","Shakespeare","Shakespeare","Shakespeare"};
+		int i=0;
+		for(String filename: filenames) {
+			Book b=new Book(filename,authorname[i]);
+			i++;
+			b.debug();
+		}
 	}
 }
