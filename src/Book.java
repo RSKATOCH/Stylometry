@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import com.sun.media.sound.InvalidFormatException;
 
@@ -24,21 +26,26 @@ class Book {
 	private String[] sentences;
 	private int sentenceCount;
 	private int wordCount;
-	Map<String,Integer> wordFrequency=new HashMap<String,Integer>();
+	Map<String,Integer> wordFrequency;
 
 	/*	Constructors
 	 * 	default constructor for initialization
-	 *	parameterized constructor for file reading
+	 *	parameterized constructor for file reading and initialization
 	 */
 	public Book() {
 		book = null;
+		sentences = null;
+		sentenceCount = 0;
+		wordCount = 0;
+		wordFrequency=null;
 	}
 	
 	public Book(String filename) throws IOException {
 		book = readFile(filename);
 		sentences = SentenceDetect(book);
 		sentenceCount=sentences.length;
-		wordFrequency=getWordFrequency(sentences); 	
+		wordFrequency=getWordFrequency(sentences);
+		wordCount = calculateWordCount(wordFrequency);
 	}
 
 	/*
@@ -93,8 +100,8 @@ class Book {
 	 * Output : List of Strings top N words.
 	 * 
 	 */
-	private List<String> getTopNWords(Map<Integer,List<String>> wordFrequency, int N) {
-		return null;
+	private List<String> getTopNWords(int N) {
+		return FrequentWords.mostFrequentWords (N, wordFrequency);
 	}
 
 	/*
@@ -134,6 +141,21 @@ class Book {
 	 */
 	private int getAverageSentenceLength(String book) {
 		return wordCount/sentenceCount;
+	}
+	
+	
+	/*
+	 * Function: calculateWordCount
+	 * Input : Map with word frequency (Map)
+	 * Output : Count of number of words in file
+	 * 
+	 */
+	private int calculateWordCount(Map<String,Integer> map) {
+		int count = 0;
+		for(Map.Entry<String, Integer> entry : map.entrySet()) {
+			count+=entry.getValue();
+		}
+		return count;
 	}
 	
 	/*
