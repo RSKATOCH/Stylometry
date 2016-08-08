@@ -6,9 +6,9 @@ class Author {
 	protected String name;
 	protected List<Book> books;
 	protected List<String> commonTopWords;
-	private int averageSentenceLength;
-	private int averagePunctuationDensity;
-	private int averageParagraphLength;
+	protected int averageSentenceLength;
+	protected int averagePunctuationDensity;
+	protected int averageParagraphLength;
 	/*	Constructors
 	 *	parameterized constructor for file reading and initialization
 	 */
