@@ -29,9 +29,9 @@ class Stylometry {
 				booksShakes.add(b);
 			i++;
 			if(tolstoy.name.equals(b.authorName)) {
-				tolstoy.books.add(b);
+				tolstoy.addBook(b);
 			} else if(shakespeare.name.equals(b.authorName)) {
-				shakespeare.books.add(b);
+				shakespeare.addBook(b);
 			}
 		}
 		Author unknown = new Author("Unknown");
@@ -39,23 +39,39 @@ class Stylometry {
 		Book b = new Book(testFileName,unknown.name);
 		unknown.addBook(b);
 		
-		final int THRESHOLD = 20;
+		//debug(tolstoy,shakespeare);
 		
-		System.out.println(tolstoy.similarity(unknown) + " " + shakespeare.similarity(unknown));
+		final int THRESHOLD = 10;
 		
-		if(tolstoy.similarity(unknown) > shakespeare.similarity(unknown) && shakespeare.similarity(unknown)<THRESHOLD) {
-			System.out.println("Tolstoy");
-		} else if(shakespeare.similarity(unknown)<THRESHOLD) {
-			System.out.println("Shakespeare");
-		} else {
-			System.out.println("Outside threshold, unknown.");
-		}
+		System.out.println(getAuthor(unknown,tolstoy,shakespeare,THRESHOLD));
 		
 		authorAverage.add(tolstoy);
 		authorAverage.add(shakespeare);
 		
 		Plot p=new Plot();
 		p.init(booksTolstoy,booksShakes,authorAverage);
-	    
+		
+	}
+	public static String getAuthor(Author test, Author a, Author b, double THRESHOLD) {
+		String author = "";
+		if(a.similarity(test) < b.similarity(test) && a.similarity(test)<THRESHOLD) {
+			return a.name;
+		} else if(b.similarity(test)<THRESHOLD) {
+			return b.name;
+		} else {
+			return "Doesn't match authors in corpora";
+		}
+	}
+	public static void debug(Author a, Author b) {
+		System.out.println("CORPORA");
+		System.out.println(a.name);
+		for(Book book : a.books) {
+			System.out.println(book.filename + book.getPunctuationDensity());
+		}
+		System.out.println(b.name);
+		for(Book book : b.books) {
+			System.out.println(book.filename + book.getPunctuationDensity());
+		}
+    
 	}
 }
