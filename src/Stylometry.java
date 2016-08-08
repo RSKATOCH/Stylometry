@@ -1,7 +1,7 @@
-package src;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 
 class Stylometry {
 	
@@ -34,16 +34,28 @@ class Stylometry {
 				shakespeare.addBook(b);
 			}
 		}
+		
 		Author unknown = new Author("Unknown");
-		String testFileName = "utils/Hamlet.txt";
+		String testFileName = "utils/WarAndPeace.txt";
 		Book b = new Book(testFileName,unknown.name);
 		unknown.addBook(b);
 		
 		//debug(tolstoy,shakespeare);
 		
-		final int THRESHOLD = 10;
+		final double THRESHOLD = 25.0;
 		
-		System.out.println(getAuthor(unknown,tolstoy,shakespeare,THRESHOLD));
+		//System.out.println(unknown.similarity(tolstoy)+" "+unknown.similarity(shakespeare));
+		String author = "";
+		//System.out.println(a.similarity(test) + b.similarity(test));
+		if(unknown.similarity(tolstoy) < unknown.similarity(shakespeare) && unknown.similarity(tolstoy)<THRESHOLD) {
+			author= tolstoy.name;
+		} else if(unknown.similarity(shakespeare)<THRESHOLD) {
+			author = shakespeare.name;
+		} else {
+			author = "Doesn't match authors in corpora";
+		}
+		
+		System.out.println(author);
 		
 		authorAverage.add(tolstoy);
 		authorAverage.add(shakespeare);
@@ -53,14 +65,7 @@ class Stylometry {
 		
 	}
 	public static String getAuthor(Author test, Author a, Author b, double THRESHOLD) {
-		String author = "";
-		if(a.similarity(test) < b.similarity(test) && a.similarity(test)<THRESHOLD) {
-			return a.name;
-		} else if(b.similarity(test)<THRESHOLD) {
-			return b.name;
-		} else {
-			return "Doesn't match authors in corpora";
-		}
+		return null;
 	}
 	public static void debug(Author a, Author b) {
 		System.out.println("CORPORA");

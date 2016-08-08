@@ -1,4 +1,4 @@
-package src;
+
 import java.util.ArrayList;
 
 import com.sun.media.jfxmediaimpl.platform.Platform;
@@ -45,7 +45,11 @@ public class Plot extends Application  {
 	    bc.setTitle("Metric Summary");
 	    xAxis.setLabel("AUthors");
 	    yAxis.setLabel("Value");
-	     
+	 
+	    yAxis.setLowerBound(0);
+	    yAxis.setUpperBound(500);
+	    yAxis.setTickUnit(0.5);
+	    
 	    Scene scene= new Scene(bc,800,800);
         
 	     for(Author a:author){

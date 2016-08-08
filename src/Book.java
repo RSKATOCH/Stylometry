@@ -1,4 +1,5 @@
-package src;
+
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -168,7 +169,7 @@ class Book {
 	 * Output : List of Strings top N words.
 	 * 
 	 */
-	private List<String> getTopNWords(int N) {
+	protected List<String> getTopNWords(int N) {
 		return FrequentWords.mostFrequentWords (N, wordFrequency);
 	}
 

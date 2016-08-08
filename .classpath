@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path=""/>
-	<classpathentry kind="lib" path="C:/Users/abiak/Downloads/opennlp-tools-1.5.0-bin/opennlp-tools-1.5.0/opennlp-tools-1.5.0.jar"/>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/rkatoch/Documents/My Received Files/opennlp-tools-1.5.0-bin/opennlp-tools-1.5.0/opennlp-tools-1.5.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -1,4 +1,4 @@
-package src;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -43,6 +43,7 @@ class Author {
 			wordCount += book.getWordCount();
 			paragraphCount+=book.getParaList().size();
 			punctuationCount+=book.getPunctuationCount(book.getBook());
+			commonTopWords.addAll(book.getTopNWords(20));
 		}
 		averageSentenceLength = wordCount/sentenceCount;
 		averagePunctuationDensity = punctuationCount/wordCount;
@@ -61,8 +62,36 @@ class Author {
 		double diffSentenceLength = Math.abs(this.averageSentenceLength-a.averageSentenceLength);
 		double diffParagraphLength = Math.abs(this.averageParagraphLength-a.averageParagraphLength);
 		double diffPunctuationDensity = Math.abs(this.averagePunctuationDensity-a.averagePunctuationDensity);
-		
-		return Math.sqrt(Math.pow(diffParagraphLength, 2)+Math.pow(diffSentenceLength, 2)+Math.pow(diffPunctuationDensity, 2));
+		double diffCommonWords = intersection(this.commonTopWords,a.commonTopWords);
+		return Math.sqrt(Math.pow(diffCommonWords, 2)+Math.pow(diffParagraphLength, 2)+Math.pow(diffSentenceLength, 2)+Math.pow(diffPunctuationDensity, 2));
 	}
 	
+	/*
+	 * Function: getSquares
+	 * Input : Real number a
+	 * Output : a*a
+	 * 
+	 */
+	protected double getSquares(double a) {
+		return a*a;
+	}
+	
+
+	/*
+	 * Function: intersection
+	 * Input : Two Lists
+	 * Output : Common elements of the two lists
+	 * 
+	 */
+	
+	public int intersection(List<String> list1, List<String> list2) {
+        int count=0;
+        for (String t : list1) {
+            if(list2.contains(t)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
 }
