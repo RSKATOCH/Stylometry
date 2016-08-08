@@ -1,6 +1,9 @@
 
 import java.util.List;
+import java.util.Set;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 class Author {
 	
@@ -10,6 +13,9 @@ class Author {
 	protected double averageSentenceLength;
 	protected double averagePunctuationDensity;
 	protected double averageParagraphLength;
+	
+	protected Set<String> Dictionary;
+	
 	/*	Constructors
 	 *	parameterized constructor for file reading and initialization
 	 */
@@ -21,6 +27,7 @@ class Author {
 		averageSentenceLength = 0;
 		averagePunctuationDensity = 0;
 		averageParagraphLength = 0;	
+		Dictionary = null;
 	}
 	
 	/*
@@ -48,6 +55,7 @@ class Author {
 		averageSentenceLength = wordCount/sentenceCount;
 		averagePunctuationDensity = punctuationCount/wordCount;
 		averageParagraphLength = wordCount/paragraphCount;
+		Dictionary=getDictionary();
 	}
 
 	/*
@@ -93,5 +101,22 @@ class Author {
         }
         return count;
     }
+	
+	/*
+	 * Function: getDictionary
+	 * Input : None
+	 * Output : Returns the dictionary of words for the author
+	 * 
+	 */
+	
+	public Set<String> getDictionary() {
+        Set<String> wordSet = new HashSet<>();
+		for(Book book : books) {
+			wordSet.addAll(book.wordFrequency.keySet());
+		}
+        return wordSet;
+    }
+
+	
 
 }

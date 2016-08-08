@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import opennlp.tools.tokenize.Tokenizer;
 import opennlp.tools.tokenize.TokenizerME;
@@ -76,19 +77,46 @@ class DiGram {
 	 * Output : most frequent word found after the provided word
 	 * 
 	 */
-	public String getNextWord(String word) {
+	/*public String getNextWord(String word) {
 		if(!diGram.get(word).isEmpty()) {
 			String s=FrequentWords.mostFrequentWords(1,diGram.get(word)).get(0);
 				return s;
 		}
-		return "No next word";
-	}
+		return null;
+	}*/
 	
+	public String getNextWord(String word) {
+		if(!diGram.get(word).isEmpty()) {
+			double p = Math.random();
+			double cumulativeProbability = 0.0;
+			for (Map.Entry<String, Integer> item : diGram.get(word).entrySet()) {
+				cumulativeProbability += item.getValue();
+				if (p <= cumulativeProbability) {
+					return item.getKey();
+				}
+			}
+		}
+		return null;
+
+	}
 	/*
-	 * Tester main
+	 * Function: getRandomWord
+	 * Input : Author A
+	 * Output : most frequent word found after the provided word
+	 * 
 	 */
-	public static void main(String[] args) throws IOException {
-		debug();
+	public String getRandomWord(Author a) {
+
+		int size = a.Dictionary.size();
+		int item = new Random().nextInt(size); // In real life, the Random object should be rather more shared than this
+		int i = 0;
+		for(String obj : a.Dictionary)
+		{
+		    if (i == item)
+		        return obj;
+		    i = i + 1;
+		}
+		return null;
 	}
 	
 	/*
@@ -109,6 +137,8 @@ class DiGram {
 				tolstoy.addBook(b);
 			}
 		}
+		tolstoy.getDictionary();
+		
 		DiGram gram = new DiGram(tolstoy);
 		int counter=0;
 		for(Map.Entry<String, Map<String,Integer>> entry : gram.diGram.entrySet()) {
@@ -123,5 +153,22 @@ class DiGram {
 				break;
 			}
 		}
+		
+		System.out.println("---------------------------------------------------");
+		System.out.println("20 sentences");
+		/*
+		for(int j=0;j<tolstoy.averageParagraphLength;j++) {
+			for(int i1=0;i1<tolstoy.averageSentenceLength;i1++) {
+
+			}
+		}*/
 	}
+
+	/*
+	 * Tester main
+	 */
+	public static void main(String[] args) throws IOException {
+		debug();
+	}
+	
 }
