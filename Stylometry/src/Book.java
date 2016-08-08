@@ -42,8 +42,9 @@ class Book {
 	private final static String TRAINING_FILE = "utils/en-sent.bin";
 
 	SentenceModel model ;
-	Map<String,Integer> wordFrequency;	
 
+	Map<String,Integer> wordFrequency;	
+		
 	List<Paragraph> paras;
 
 	/*	Constructors
@@ -163,6 +164,10 @@ class Book {
 		return str;
 	}
 
+	protected Map<String,Integer> getMapOfWords() {
+		return wordFrequency;
+		
+	}
 	/*
 	 * Function: getTopNWords
 	 * Input : Map with word frequency (Map), Number of words to give as output (Integer)
