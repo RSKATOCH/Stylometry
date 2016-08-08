@@ -27,6 +27,8 @@ class Book {
 	private String[] sentences;
 	private int sentenceCount;
 	private int wordCount;
+	private int punctuationCount;
+	private double punctuationDensity;
 	Map<String,Integer> wordFrequency;
 	
 	/*
@@ -59,10 +61,13 @@ class Book {
 	public Book(String filename) throws IOException {
 		book = readFile(filename);
 		sentences = SentenceDetect(book);
-		sentenceCount=sentences.length;
-		wordFrequency=getWordFrequency(sentences);
-		wordCount = calculateWordCount(wordFrequency);
 		paras = getParas(book);
+		sentenceCount=sentences.length;
+		wordFrequency=getWordFrequency(sentences); 
+		wordCount = calculateWordCount(wordFrequency);
+		punctuationCount=getPunctuationCount(book);
+		punctuationDensity=getPunctionDensity();
+		//System.out.println(punctuationDensity);
 	}
 
 	/*
@@ -105,6 +110,16 @@ class Book {
 		return this.wordCount;
 	}
 
+	/*
+	 * Function: getWordCount
+	 * Input : None
+	 * Output : Word Count of this book
+	 * 
+	 */
+	private double getPunctionDensity() {
+		return (double)this.punctuationCount/this.wordCount;
+	}
+	
 	/*
 	 * Function: readFile
 	 * Input : Path of the file (String)
@@ -205,6 +220,7 @@ class Book {
 		is.close();
 		return sentences;
 	}
+
 	
 	/*
 	 * Function: getParas
@@ -231,5 +247,22 @@ class Book {
 	
 	
 
-	 
+	/*
+	 * Function: getPunctionCount
+	 * Input : Path of the file (String)
+	 * Output :Number of punctuation used
+	 * 
+	 */
+   	 
+	private Integer getPunctuationCount(String data){
+		int punc=0;
+		 for (int a = 0; a < data.length(); a++) {
+	            char c = data.charAt(a);
+	            if (!Character.isLetterOrDigit(c) && !Character.isWhitespace(c)) {
+	                punc++;
+	            }
+		 }
+		return punc;
+	}
+
 }

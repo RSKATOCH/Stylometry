@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -11,7 +13,11 @@ class Stylometry {
 	private final static int BookCount = 3;
 	
 	public static void main(String args[]) throws IOException {
+
 		final String filename = "C:/GitRepo/Stylometry/utils/WarAndPeace.txt";
 		Book b=new Book(filename);
+
+		Book c=new Book("C:/Users/abiak/Downloads/War.txt");
+
 	}
 }
