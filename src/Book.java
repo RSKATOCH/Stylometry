@@ -121,6 +121,12 @@ class Book {
 		return wordCount/sentenceCount;
 	}
 	
+	/*
+	 * Function: getSentenceDetect
+	 * Input : The book variable containing all the lines
+	 * Output : List of strings that are the lines of the book
+	 * 
+	 */
 	private String[] SentenceDetect(String data) throws InvalidFormatException,IOException {
 		
 		// always start with a model, a model is learned from training data
