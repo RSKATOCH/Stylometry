@@ -29,6 +29,7 @@ class Book {
 	private int punctuationCount;
 	private double punctuationDensity;
 	Map<String,Integer> wordFrequency;
+	
 
 	/*	Constructors
 	 * 	default constructor for initialization
