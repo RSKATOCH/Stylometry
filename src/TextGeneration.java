@@ -19,12 +19,12 @@ public class TextGeneration {
 		// TODO Auto-generated method stub
 		Set<String> Vocabulary=new HashSet<String>();
 		
-		final int avgWords=18;
 		final int noOfLines = 20;
 		
 		Author tolstoy = DiGram.getBooks();
 		System.out.println("Vocabulary created");
 		Vocabulary=tolstoy.Dictionary;
+		final  int avgWords=18;
 		System.out.println("Starting Paragraph Generation");
 		System.out.println("-------------------------------------");
 		System.out.println(RandomParagraphGeneration(Vocabulary,avgWords,noOfLines,tolstoy));
