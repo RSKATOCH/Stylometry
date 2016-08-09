@@ -1,3 +1,5 @@
+import java.util.List;
+import java.util.ArrayList;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,7 +16,7 @@ import opennlp.tools.util.InvalidFormatException;
 class DiGram {
 
 	protected Map<String,Map<String,Integer>> diGram;
-	
+
 	/*	Constructors
 	 *	parameterized constructor for file reading and initialization
 	 */
@@ -22,7 +24,7 @@ class DiGram {
 		diGram = getDiGramFrequencyTable(a);
 	}
 
-	
+
 	public static String BLANK = ""; 
 
 	/*
@@ -40,6 +42,8 @@ class DiGram {
 
 		Tokenizer tokenizer = new TokenizerME(model);
 
+		final String START = "START!";
+		final String STOP = "STOP!";
 
 		for(Book book : a.books) {
 
@@ -47,37 +51,82 @@ class DiGram {
 			String[] tokens;
 
 			for(String s:book.sentences){
-				String prevToken = BLANK;
+				String prevToken = START;
 				tokens = tokenizer.tokenize(s);
 				for (String token : tokens) {
 					/*Remove punctuation */
-					//if(!token.toString().matches(",|\\.|\"|!|\'|\\?|\'s|;|:|\'d||\\]|\\[|\\(|\\)|\\}|\\{")) {
-					if(!digram.containsKey(prevToken)) {
-						digram.put(prevToken,new HashMap<String,Integer>());
-					}
-					else if (digram.get(prevToken).containsKey(token)) {
-						digram.get(prevToken).put(token, digram.get(prevToken).get(token) + 1);
-
-					} else {
-
-						digram.get(prevToken).put(token, 1);
-					}
+					updateMap(digram,prevToken,token);
 					prevToken = token;
-					//}
-				}	
+
+				}
+				updateMap(digram,prevToken,STOP);
+
 			}
 		}
-		digram.remove(BLANK);
 		return digram;
 	}
+
+	/*
+	 * Function: updateMap
+	 * Input : digram map, previous String and String
+	 * Output : updated map with frequencies added
+	 * 
+	 */
+
+	public void updateMap(Map<String,Map<String,Integer>> digram, String prevToken, String token) {
+		//if(!token.toString().matches(",|\\.|\"|!|\'|\\?|\'s|;|:|\'d||\\]|\\[|\\(|\\)|\\}|\\{")) {
+		if(!digram.containsKey(prevToken)) {
+			digram.put(prevToken,new HashMap<String,Integer>());
+		} else if (digram.get(prevToken).containsKey(token)) {
+			digram.get(prevToken).put(token, digram.get(prevToken).get(token) + 1);
+
+		} else {
+
+			digram.get(prevToken).put(token, 1);
+		}
+		//}
+
+	}
+
+	/*
+	 * Function: getStartList
+	 * Input : Mapping
+	 * Output : List of words that come after Start
+	 * 
+	 */
+
+	public List<String> getStartList(Map<String,Map<String,Integer>> digram, String START) {
+		List<String> startList = new ArrayList<>();
+		if(digram.containsKey(START) && !digram.get(START).isEmpty())
+			startList.addAll(digram.get(START).keySet());
+		return startList;
+	}
 	
+	/*
+	 * Function: getStartList
+	 * Input : Mapping
+	 * Output : List of words that come after Start
+	 * 
+	 */
+
+	public List<String> getStopList(Map<String,Map<String,Integer>> digram, String STOP) {
+		List<String> stopList = new ArrayList<>();
+		for(Map.Entry<String,Map<String,Integer>> entry : digram.entrySet()) {
+			if(entry.getValue().containsKey(STOP))
+				stopList.add(entry.getKey());
+			
+		}
+		stopList.remove(",");
+		return stopList;
+	}
+
 	/*
 	 * Function: getNextWord
 	 * Input : word
 	 * Output : next word found after the provided word based on probability distribution
 	 * 
 	 */
-	
+
 	public String getNextWord(String word) {
 		if(!diGram.get(word).isEmpty()) {
 			double p = Math.random();
@@ -95,7 +144,7 @@ class DiGram {
 		}
 		return null;
 	}
-	
+
 	/*
 	 * This one is for most frequent word
 	 * 
@@ -106,8 +155,8 @@ class DiGram {
 		}
 		return null;
 	}
-	*/
-	
+	 */
+
 	/*
 	 * Function: getRandomWord
 	 * Input : Author A
@@ -121,13 +170,13 @@ class DiGram {
 		int i = 0;
 		for(String obj : a.Dictionary)
 		{
-		    if (i == item)
-		        return obj;
-		    i = i + 1;
+			if (i == item)
+				return obj;
+			i = i + 1;
 		}
 		return null;
 	}
-	
+
 	public static Author getBooks() throws IOException {
 		final String filenames[] = {"utils/WarAndPeace.txt","utils/AnnaKarenina.txt","utils/Resurrection.txt"};
 		final String authorname[] = {"Tolstoy","Tolstoy","Tolstoy"};
@@ -143,7 +192,7 @@ class DiGram {
 		author.getDictionary();
 		return author;
 	}
-	
+
 	/*
 	 * Function: debug
 	 * Input : none
@@ -151,23 +200,17 @@ class DiGram {
 	 * 
 	 */
 	public static void debug() throws InvalidFormatException, IOException{
-		
+
 		Author tolstoy = getBooks();
 		DiGram gram = new DiGram(tolstoy);
 		int counter=0;
-		for(Map.Entry<String, Map<String,Integer>> entry : gram.diGram.entrySet()) {
+		for(Map.Entry<String,Integer> entry : gram.diGram.get("START!").entrySet()) {
 			System.out.println("------------------");
 			System.out.println(entry.getKey());
-			for(Map.Entry<String,Integer> entryIn : entry.getValue().entrySet()) {
-				System.out.println(entryIn.getKey()+" "+entryIn.getValue());
-			}
 			System.out.println("Most Frequent:" + gram.getNextWord(entry.getKey()) );
-			counter++;
-			if(counter>10) {
-				break;
-			}
 		}
 		
+
 	}
 
 	/*
@@ -176,5 +219,5 @@ class DiGram {
 	public static void main(String[] args) throws IOException {
 		debug();
 	}
-	
+
 }
