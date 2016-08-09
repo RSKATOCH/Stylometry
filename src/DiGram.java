@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import opennlp.tools.tokenize.Tokenizer;
 import opennlp.tools.tokenize.TokenizerME;
@@ -16,7 +17,7 @@ import opennlp.tools.util.InvalidFormatException;
 class DiGram {
 
 	protected Map<String,Map<String,Integer>> diGram;
-
+	Random random = new Random();
 	/*	Constructors
 	 *	parameterized constructor for file reading and initialization
 	 */
@@ -117,6 +118,10 @@ class DiGram {
 			
 		}
 		stopList.remove(",");
+		stopList.remove("\'");
+		stopList.remove("I");
+		stopList.remove(";");
+		stopList.remove("\"");
 		return stopList;
 	}
 
@@ -127,8 +132,8 @@ class DiGram {
 	 * 
 	 */
 
-	public String getNextWord(String word) {
-		if(!diGram.get(word).isEmpty()) {
+	public String getNextWord(String word, ArrayList<String> keys) {
+		if(diGram.get(word)!=null && !diGram.get(word).isEmpty()) {
 			double p = Math.random();
 			int totalFrequency=0;
 			double cumulativeProbability = 0.0;
@@ -142,7 +147,30 @@ class DiGram {
 				}
 			}
 		}
-		return null;
+		return keys.get( random.nextInt(keys.size()));
+	}
+
+	/*
+	 * Function: getNextStopWord
+	 * Input : word
+	 * Output : next word found after the provided word based on probability distribution
+	 * 
+	 */
+
+	public String getNextStopWord(String word, List<String> stopList) {
+		if(!diGram.get(word).isEmpty()) {
+			
+			double p = Math.random();
+			int totalFrequency=0;
+			double cumulativeProbability = 0.0;
+			for (Map.Entry<String, Integer> item : diGram.get(word).entrySet()) {
+				if(stopList.contains(item.getKey())) {
+					return item.getKey();
+				}
+			}
+			return ".";
+		}
+		return ".";
 	}
 
 	/*
@@ -207,7 +235,7 @@ class DiGram {
 		for(Map.Entry<String,Integer> entry : gram.diGram.get("START!").entrySet()) {
 			System.out.println("------------------");
 			System.out.println(entry.getKey());
-			System.out.println("Most Frequent:" + gram.getNextWord(entry.getKey()) );
+			//System.out.println("Most Frequent:" + gram.getNextWord(entry.getKey()) );
 		}
 		
 

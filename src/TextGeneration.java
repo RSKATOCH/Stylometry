@@ -46,6 +46,9 @@ public class TextGeneration {
 		ArrayList<String> keys = new ArrayList<String>(vocabulary);
 		Random random = new Random();
 		
+		final int THRESHOLD_VAR = 5;
+		final int MIN_THRESHOLD = avgWords - THRESHOLD_VAR;
+		final int MAX_THRESHOLD = avgWords + THRESHOLD_VAR;
 		
 		DiGram di = new DiGram(a);
 
@@ -58,28 +61,25 @@ public class TextGeneration {
 		{
 			String word = startList.get( random.nextInt(startList.size()));
 			para+=word+" ";
-			boolean flag = false;
-			for(int j=0;j<avgWords;j++)
-			{
-				while(di.getNextWord(word)==null) {
-					word=keys.get( random.nextInt(keys.size()));
-					para+=word+" ";
-					j++;
-					if(stopList.contains(word)) {
-						flag=true;
-						break;
-					}
-				}
-				if(flag) {
+			int counter = 0;
+			while(true){
+				word=di.getNextWord(word,keys);
+				para+=word+" ";
+				//j++;
+				counter++;
+				if(stopList.contains(word) && counter>MIN_THRESHOLD) {
 					break;
 				}
-				String nextWord = di.getNextWord(word);
-				para+=nextWord+" ";
-				word= nextWord;
-				if(stopList.contains(word)) {
+				if(counter>MAX_THRESHOLD) {
+					String lastWord =di.getNextWord(word,keys);
+					while(stopList.contains(lastWord)) {
+						lastWord = di.getNextWord(lastWord, keys);
+					}
+					para+=lastWord+" ";
 					break;
 				}
 			}
+			
 			para+="\n";
 		}
 		return para;
@@ -106,12 +106,12 @@ public class TextGeneration {
 		{
 			for(int j=0;j<avgWords;j++)
 			{
-				while(di.getNextWord(word)==null) {
+				while(di.getNextWord(word,keys)==null) {
 					word=keys.get( random.nextInt(keys.size()));
 					para+=word+" ";
 					j++;
 				}
-				String nextWord = di.getNextWord(word);
+				String nextWord = di.getNextWord(word,keys);
 				para+=nextWord+" ";
 				word= nextWord;
 			}
